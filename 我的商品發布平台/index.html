@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>商品發佈平台</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 800px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .publish-button {
+            display: block;
+            width: fit-content;
+            margin: 0 auto 30px auto;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            text-decoration: none;
+        }
+        .publish-button:hover {
+            background-color: #0056b3;
+        }
+        .item-list {
+            margin-top: 20px;
+            border-top: 1px solid #eee;
+            padding-top: 20px;
+        }
+        .item-link {
+            text-decoration: none;
+            color: inherit;
+            display: block;
+            margin-bottom: 15px;
+        }
+        .item {
+            border: 1px solid #ddd;
+            padding: 15px;
+            border-radius: 5px;
+            background-color: #fff;
+            transition: background-color 0.3s ease;
+        }
+        .item:hover {
+            background-color: #e9e9e9;
+            cursor: pointer;
+        }
+        .item h2 {
+            margin-top: 0;
+            color: #007bff;
+        }
+        .item p {
+            margin-bottom: 5px;
+            color: #555;
+        }
+        .item .price {
+            font-weight: bold;
+            color: #28a745;
+            font-size: 1.1em;
+        }
+        .item .description {
+            font-style: italic;
+            color: #666;
+        }
+        .no-items-message {
+            text-align: center;
+            color: #888;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>我的二手拍賣</h1>
+        <a href="新文件 2.html" class="publish-button">發佈您的商品</a>
+
+        <div class="item-list">
+            <h2>已發佈商品</h2>
+            <div id="publishedItemsContainer">
+                <p class="no-items-message" id="noItemsMessage" style="display: none;">目前沒有已發佈的商品。</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const publishedItemsContainer = document.getElementById('publishedItemsContainer');
+            const noItemsMessage = document.getElementById('noItemsMessage');
+
+            // 模擬測試資料（首次使用）
+            if (!localStorage.getItem('publishedItems')) {
+                localStorage.setItem('publishedItems', JSON.stringify([
+                    {
+                        id: "item001",
+                        name: "iPhone 13",
+                        category: "電子產品",
+                        description: "九成新，運作正常。",
+                        price: "25000",
+                        contact: "0912-345-678"
+                    },
+                    {
+                        id: "item002",
+                        name: "腳踏車",
+                        category: "交通工具",
+                        description: "有些許使用痕跡，功能正常。",
+                        price: "3500",
+                        contact: "0987-654-321"
+                    }
+                ]));
+            }
+
+            const items = JSON.parse(localStorage.getItem('publishedItems')) || [];
+
+            if (items.length === 0) {
+                noItemsMessage.style.display = 'block';
+            } else {
+                noItemsMessage.style.display = 'none';
+                items.forEach(item => {
+                    const itemLink = document.createElement('a');
+                    itemLink.href = `item-detail.html?id=${item.id}`;
+                    itemLink.classList.add('item-link');
+
+                    const itemDiv = document.createElement('div');
+                    itemDiv.classList.add('item');
+
+                    itemDiv.innerHTML = `
+                        <h2>${item.name}</h2>
+                        <p><strong>分類:</strong> ${item.category}</p>
+                        <p class="description">${item.description}</p>
+                        <p class="price">價格: $${item.price}</p>
+                        <p>聯絡方式: ${item.contact}</p>
+                    `;
+
+                    itemLink.appendChild(itemDiv);
+                    publishedItemsContainer.appendChild(itemLink);
+                });
+            }
+        });
+    </script>
+</body>
+</html>
