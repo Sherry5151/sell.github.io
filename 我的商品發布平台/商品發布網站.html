@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>發佈新商品</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 600px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #333;
+        }
+        label {
+            font-weight: bold;
+            color: #555;
+            display: block;
+            margin-bottom: 8px;
+        }
+        input, select, textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #28a745;
+            border: none;
+            color: white;
+            font-size: 18px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+        .preview-img {
+            max-width: 100%;
+            max-height: 200px;
+            display: block;
+            margin: 0 auto 20px auto;
+            object-fit: contain;
+        }
+        .success-message {
+            color: green;
+            text-align: center;
+            font-weight: bold;
+            display: none;
+        }
+        .back-link {
+            text-align: center;
+            display: block;
+            margin-top: 20px;
+            color: #007bff;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>發佈新商品</h1>
+        <form id="publishForm">
+            <label for="itemName">商品名稱:</label>
+            <input type="text" id="itemName" required>
+
+            <label for="category">分類:</label>
+            <select id="category">
+                <option value="電子產品">電子產品</option>
+                <option value="書籍">書籍</option>
+                <option value="服飾">服飾</option>
+                <option value="家具">家具</option>
+                <option value="其他">其他</option>
+            </select>
+
+            <label for="description">商品描述:</label>
+            <textarea id="description" required></textarea>
+
+            <label for="price">價格 ($):</label>
+            <input type="number" id="price" required>
+
+            <label for="contact">聯絡方式:</label>
+            <input type="text" id="contact" required>
+
+            <label for="photo">上傳商品照片:</label>
+            <input type="file" id="photo" accept="image/*">
+            <img id="preview" class="preview-img" src="#" alt="預覽圖片" style="display: none;">
+
+            <button type="submit">發佈商品</button>
+            <div class="success-message" id="successMessage">商品已成功發佈！</div>
+        </form>
+        <a href="index.html" class="back-link">返回首頁</a>
+    </div>
+
+    <script>
+        const publishForm = document.getElementById('publishForm');
+        const photoInput = document.getElementById('photo');
+        const preview = document.getElementById('preview');
+        const successMessage = document.getElementById('successMessage');
+        let imageBase64 = "";
+
+        photoInput.addEventListener('change', function () {
+            const file = this.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    imageBase64 = e.target.result;
+                    preview.src = imageBase64;
+                    preview.style.display = "block";
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        publishForm.addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const newItem = {
+                id: 'item' + Date.now(),
+                name: document.getElementById('itemName').value,
+                category: document.getElementById('category').value,
+                description: document.getElementById('description').value,
+                price: document.getElementById('price').value,
+                contact: document.getElementById('contact').value,
+                photo: imageBase64
+            };
+
+            const items = JSON.parse(localStorage.getItem('publishedItems')) || [];
+            items.push(newItem);
+            localStorage.setItem('publishedItems', JSON.stringify(items));
+
+            successMessage.style.display = 'block';
+
+            setTimeout(() => {
+                window.location.href = "index.html";
+            }, 1500);
+        });
+    </script>
+</body>
+</html>
